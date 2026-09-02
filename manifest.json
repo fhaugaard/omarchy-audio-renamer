@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "skye.audio-renamer",
+  "name": "Audio Device Renamer",
+  "version": "1.0.0",
+  "author": "skye",
+  "description": "Rename audio output and input devices in Omarchy and WirePlumber.",
+  "kinds": [
+    "panel"
+  ],
+  "entryPoints": {
+    "panel": "Panel.qml"
+  }
+}
