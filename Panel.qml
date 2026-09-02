@@ -91,6 +91,17 @@ Item {
     resetAllProc.running = true
   }
 
+  Timer {
+    id: retryTimer
+    interval: 400
+    repeat: false
+    onTriggered: {
+      if (root.devices.length === 0 && root.opened) {
+        root.refreshDevices()
+      }
+    }
+  }
+
   Process {
     id: listProc
     command: ["omarchy-audio-rename", "list", "--json", "--all"]
@@ -113,6 +124,8 @@ Item {
       if (code !== 0 && root.statusMessage === "") {
         root.statusMessage = "Failed to load audio devices"
         root.statusType = "error"
+      } else if (root.devices.length === 0 && root.opened && !retryTimer.running) {
+        retryTimer.start()
       }
     }
   }
@@ -316,6 +329,15 @@ Item {
                 font.bold: true
               }
 
+              Text {
+                visible: root.sinks.length === 0
+                text: root.loading ? "Loading output devices…" : "(No audio output devices detected)"
+                color: Qt.darker(Color.menu.text, 1.6)
+                font.family: Style.font.family
+                font.pixelSize: Style.font.caption
+                font.italic: true
+              }
+
               Repeater {
                 model: root.sinks
 
@@ -445,6 +467,15 @@ Item {
                 font.family: Style.font.family
                 font.pixelSize: Style.font.caption
                 font.bold: true
+              }
+
+              Text {
+                visible: root.sources.length === 0
+                text: root.loading ? "Loading input devices…" : "(No audio input devices detected)"
+                color: Qt.darker(Color.menu.text, 1.6)
+                font.family: Style.font.family
+                font.pixelSize: Style.font.caption
+                font.italic: true
               }
 
               Repeater {
